@@ -28,6 +28,12 @@ class AllBreedsController extends Controller
         $bot->reply($this->photos->random());
     }
 
+
+    public function hearText($bot, $text)
+    {
+        $bot->reply('You writed ' . $text);
+    }
+
     /**
      * Return a random dog image from a given breed.
      *
