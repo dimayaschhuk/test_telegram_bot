@@ -2,37 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\DogService;
+
 
 class AllBreedsController extends Controller
 {
     const BOT_API_KEY = '779486044:AAE9G5EjIGrS-NCrP0Yswdttw2d-rmhxEi4';
     const BOT_USERNAME = 'username_bot';
     const HOOK_URL = 'https://www.dimayashchuk.icu/hook';
-
-
-    public function __construct()
-    {
-        $this->photos = new DogService;
-    }
-
-    public function random($bot)
-    {
-        $bot->reply($this->photos->random());
-    }
-
-
-    public function hearText($bot, $text)
-    {
-        $bot->reply('You writed ' . $text);
-    }
-
-
-    public function byBreed($bot, $name)
-    {
-
-        $bot->reply($this->photos->byBreed($name));
-    }
 
 
     public function set()

@@ -14,3 +14,6 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::match(['get', 'post'],'/hook', 'AllBreedsController@hook');
+Route::match(['get', 'post'],'/set', 'AllBreedsController@set');
