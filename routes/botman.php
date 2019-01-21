@@ -3,6 +3,10 @@
 
 $botman = resolve('botman');
 
+$botman->hears('Hi', function ($bot) {
+    $bot->reply('Hello!');
+});
+
 $botman->hears('/random', 'App\Http\Controllers\AllBreedsController@random');
 
 $botman->hears('/b {breed}', 'App\Http\Controllers\AllBreedsController@byBreed');
