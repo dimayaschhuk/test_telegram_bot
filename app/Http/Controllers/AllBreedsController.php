@@ -6,25 +6,18 @@ use App\Services\DogService;
 
 class AllBreedsController extends Controller
 {
-    /**
-     * Controller constructor
-     *
-     * @return void
-     */
+    const BOT_API_KEY = '779486044:AAE9G5EjIGrS-NCrP0Yswdttw2d-rmhxEi4';
+    const BOT_USERNAME = 'username_bot';
+    const HOOK_URL = 'https://www.dimayashchuk.icu/hook';
+
+
     public function __construct()
     {
         $this->photos = new DogService;
     }
 
-    /**
-     * Return a random dog image from all breeds.
-     *
-     * @return void
-     */
     public function random($bot)
     {
-        // $this->photos->random() is basically the photo URL returned from the service.
-        // $bot->reply is what we will use to send a message back to the user.
         $bot->reply($this->photos->random());
     }
 
@@ -34,15 +27,98 @@ class AllBreedsController extends Controller
         $bot->reply('You writed ' . $text);
     }
 
-    /**
-     * Return a random dog image from a given breed.
-     *
-     * @return void
-     */
+
     public function byBreed($bot, $name)
     {
-        // Because we used a wildcard in the command definition, Botman will pass it to our method.
-        // Again, we let the service class handle the API call and we reply with the result we get back.
+
         $bot->reply($this->photos->byBreed($name));
+    }
+
+
+    public function set()
+    {
+        $bot_api_key = self::BOT_API_KEY;
+        $bot_username = self::BOT_USERNAME;
+        $hook_url = self::HOOK_URL;
+
+        try {
+            $telegram = new Longman\TelegramBot\Telegram($bot_api_key, $bot_username);
+            $result = $telegram->setWebhook($hook_url);
+            if ($result->isOk()) {
+                echo $result->getDescription();
+            }
+
+        } catch (Longman\TelegramBot\Exception\TelegramException $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function unset()
+    {
+        $bot_api_key = self::BOT_API_KEY;
+        $bot_username = self::BOT_USERNAME;
+
+        try {
+
+            $telegram = new Longman\TelegramBot\Telegram($bot_api_key, $bot_username);
+
+            $result = $telegram->deleteWebhook();
+
+            if ($result->isOk()) {
+                echo $result->getDescription();
+            }
+        } catch (Longman\TelegramBot\Exception\TelegramException $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function manager()
+    {
+        $bot_username = self::BOT_USERNAME;
+        $bot_api_key = self::BOT_API_KEY;
+        try {
+            $bot = new TelegramBot\TelegramBotManager\BotManager([
+                'api_key'      => $bot_api_key,
+                'bot_username' => $bot_username,
+                'secret'       => 'super_secret',
+                'limiter'      => ['enabled' => TRUE],
+            ]);
+
+            $bot->run();
+
+        } catch (Longman\TelegramBot\Exception\TelegramException $e) {
+            Longman\TelegramBot\TelegramLog::error($e);
+        } catch (Longman\TelegramBot\Exception\TelegramLogException $e) {
+
+        }
+    }
+
+    public function hook()
+    {
+        $bot_api_key = self::BOT_API_KEY;
+        $bot_username = self::BOT_USERNAME;
+
+        $admin_users = [
+//    123,
+        ];
+
+
+        $commands_paths = [
+            __DIR__ . '/Commands/',
+        ];
+
+        try {
+            $telegram = new Longman\TelegramBot\Telegram($bot_api_key, $bot_username);
+            $telegram->addCommandsPaths($commands_paths);
+            $telegram->enableAdmins($admin_users);
+            $telegram->enableLimiter();
+            $telegram->handle();
+
+        } catch (Longman\TelegramBot\Exception\TelegramException $e) {
+            Longman\TelegramBot\TelegramLog::error($e);
+        } catch (Longman\TelegramBot\Exception\TelegramLogException $e) {
+
+        }
+
     }
 }
