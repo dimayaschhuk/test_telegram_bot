@@ -12,6 +12,6 @@ return [
     |
     */
     'matchingData' => [
-        'driver' => 'telegram',
+        'driver' => 'web',
     ],
 ];
